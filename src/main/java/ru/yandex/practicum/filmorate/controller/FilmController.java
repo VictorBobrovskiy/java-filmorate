@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.exceptions.*;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +31,7 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film create(@RequestBody Film film)  {
+    public Film create(@Valid @RequestBody Film film)  {
         validateFilm(film);
         film.setId(++id);
         films.put(film.getId(), film);
@@ -39,7 +40,7 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film update (@RequestBody Film film)  {
+    public Film update (@Valid @RequestBody Film film)  {
         if (!films.containsKey(film.getId())) {
             throw new ValidationException("Film with id " + id +" not found");
         }
@@ -53,11 +54,11 @@ public class FilmController {
         return film;
     }
 
-    public void validateFilm(Film film) {
+    public void validateFilm(@Valid Film film) {
         if (film.getName().isBlank() || film.getName() == null) {
             throw new ValidationException("Film name should not be blank");
         } else if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
-            throw new ValidationException("Film release date not be earlier than 28-12-1895");
+            throw new ValidationException("Film release date not be earlier than 28-12-1895. Now: " + film.getReleaseDate());
         } else if (film.getDescription().length() > 200) {
             throw new ValidationException("Film description should not be more than 200 symbols");
         } else if (film.getDuration() <= 0) {

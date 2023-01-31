@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -26,7 +27,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User create(@RequestBody User user)  {
+    public User create(@Valid @RequestBody User user)  {
             validateUser(user);
             user.setId(++id);
             users.put(user.getId(), user);
@@ -35,7 +36,7 @@ public class UserController {
     }
 
     @PutMapping
-    public User update (@RequestBody User user)  {
+    public User update (@Valid @RequestBody User user)  {
         if (!(users.containsKey(user.getId()))) {
             throw new ValidationException("User with id " + user.getId() +" not found");
         }
@@ -49,7 +50,7 @@ public class UserController {
         return user;
     }
 
-        public void validateUser(User user) {
+        public void validateUser(@Valid User user) {
             if (!(user.getEmail().contains("@"))) {
                 throw new ValidationException("A valid e-mail should contain @");
             }
