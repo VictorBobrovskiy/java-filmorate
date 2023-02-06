@@ -1,16 +1,20 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.extern.slf4j.Slf4j;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
-@NotNull
 @Slf4j
+@NotNull
 public class User {
-    private int id;
+    private Long id;
+
+    private Set<Long> friends;
     @NotBlank
     private String email;
     @NotBlank
@@ -21,12 +25,24 @@ public class User {
     public User() {
     }
 
+    @Autowired
     public User(String email, String login, String name, LocalDate birthdate) {
         this.email = email;
         this.login = login;
         this.name = name;
         this.birthday = birthdate;
+        friends = new HashSet<>();
     }
+
+    public Set<Long> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(Set<Long> friends) {
+        this.friends = friends;
+    }
+
+
 
     public String getLogin() {
         return login;
@@ -36,11 +52,11 @@ public class User {
         this.login = login;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -1,17 +1,23 @@
 package ru.yandex.practicum.filmorate;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.yandex.practicum.filmorate.controller.FilmController;
-import ru.yandex.practicum.filmorate.controller.UserController;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ValidationTests {
+
+    @Autowired
+    InMemoryUserStorage userStorage;
 
     @Test
     void validateFilm() {
@@ -70,20 +76,20 @@ class ValidationTests {
     }
     @Test
     void validateUser() {
-        UserController userController = new UserController();
+
         User user = new User("user@mail.ru", "login", "name",
                 LocalDate.of(1998, 11, 25));
 
-        userController.create(user);
+        userStorage.create(user);
 
         User userName = new User("user@mail.ru", "userName", "",
                 LocalDate.of(1998, 11, 25));
-        userController.create(userName);
+        userStorage.create(userName);
 
         User userEmail = new User("mail.ru", "userEmail", "name",
                 LocalDate.of(1998, 11, 25));
         try {
-            userController.create(userEmail);
+            userStorage.create(userEmail);
         } catch (ValidationException ex) {
             System.out.println(ex.getMessage());
         }
@@ -91,7 +97,7 @@ class ValidationTests {
         User userLogin = new User("user@mail.ru", " ", "userLogin",
                 LocalDate.of(1998, 11, 25));
         try{
-        userController.create(userLogin);
+            userStorage.create(userLogin);
         } catch (ValidationException ex) {
             System.out.println(ex.getMessage());
         }
@@ -99,19 +105,19 @@ class ValidationTests {
         User userBirthday = new User("user@mail.ru", "login", "name",
                 LocalDate.now().plusDays(1));
         try{
-            userController.create(userBirthday);
+            userStorage.create(userBirthday);
         } catch (ValidationException ex) {
             System.out.println(ex.getMessage());
         }
 
         User userBlank = new User();
         try{
-            userController.create(userBlank);
+            userStorage.create(userBlank);
         } catch (NullPointerException ex) {
             System.out.println(ex.getMessage());
         }
 
-        List<User> userList = userController.findAll();
+        Collection<User> userList = userStorage.getUsers();
 
         System.out.println(userList);
         assertEquals(2, userList.size());
