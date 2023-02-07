@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Slf4j
+
 @NotNull
 public class User {
     private Long id;
@@ -41,8 +41,6 @@ public class User {
     public void setFriends(Set<Long> friends) {
         this.friends = friends;
     }
-
-
 
     public String getLogin() {
         return login;
@@ -90,19 +88,20 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return email.equals(user.email) && Objects.equals(name, user.name) && Objects.equals(birthday, user.birthday);
+        return Objects.equals(id, user.id) && email.equals(user.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(email);
+        return Objects.hash(id, email);
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "email='" + email + '\'' +
-                ", id=" + id +
+                "id=" + id +
+                ", friends=" + friends +
+                ", email='" + email + '\'' +
                 ", login='" + login + '\'' +
                 ", name='" + name + '\'' +
                 ", birthday=" + birthday +

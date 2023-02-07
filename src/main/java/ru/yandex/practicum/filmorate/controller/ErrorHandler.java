@@ -9,30 +9,25 @@ import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.ErrorResponse;
 
-    @RestControllerAdvice ("ru.yandex.practicum")
+    @RestControllerAdvice ("ru.yandex.practicum.filmorate.controller")
     public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidation (final ValidationException e) {
-        return new ErrorResponse(
-                e.getMessage()
-        );
+        return new ErrorResponse( e.getMessage());
     }
-        @ExceptionHandler
-        @ResponseStatus(HttpStatus.BAD_REQUEST)
-        public ErrorResponse UserNotFoundException (final UserNotFoundException e) {
-            return new ErrorResponse(
-                    e.getMessage()
-            );
-        }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleUserNotFound (final UserNotFoundException e) {
+        return new ErrorResponse(e.getMessage());
+    }
 
 
-        @ExceptionHandler
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleError (final Throwable e) {
-        return new ErrorResponse(
-                "Internal Server Error"
-        );
+        return new ErrorResponse("Internal Server Error");
     }
 }

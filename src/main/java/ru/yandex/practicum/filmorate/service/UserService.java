@@ -19,48 +19,57 @@ public class UserService {
 
     private static Long id = 0L;
 
+    private Set<Long> allIds;
+
     @Autowired
     public UserService(UserStorage userStorage) {
         this.userStorage = userStorage;
+        allIds = new HashSet<>();
     }
-
+    public Set<Long> getAllIds() {
+        return allIds;
+    }
 
     public List<User> getUsers() {
         log.debug("Current number of users: {}", userStorage.getUsers().size());
         return userStorage.getUsers();
     }
 
-    public User getUser(Long id){
-        log.debug("User created: " + userStorage.getUser(id));
+    public User getUser(String idString){
+        Long id = Long.parseLong(idString);
+        if (!(allIds.contains(id))) {
+            throw new UserNotFoundException("User not found");
+        }
+        log.debug("User: " + userStorage.getUser(id));
         return userStorage.getUser(id);
     }
 
+
     public User create (User user)  {
-        if (userStorage.getUsers().contains(user)) {
-            throw new UserNotFoundException("User with id " + user +" already exists");
-        }
         validateUser(user);
         user.setId(++id);
+        allIds.add(id);
         log.debug("User created: " + user);
         return userStorage.create(user);
     }
 
     public User update(User user) {
-        if (!(userStorage.getUsers().contains(user))) {
-            throw new UserNotFoundException("User with id " + user +" not found");
+        if (!(allIds.contains(user.getId()))) {
+            throw new UserNotFoundException("User not found");
         }
-        try {
-            validateUser(user);
-            userStorage.update(user);
-            log.debug("User updated: " + user);
-        } catch (ValidationException ex) {
-            System.out.println(ex.getMessage());
-        }
+        validateUser(user);
+        userStorage.update(user);
+        log.debug("User updated: " + user);
         return user;
     }
 
 
-    public void addFriend(Long id, Long friendId) {
+    public void addFriend(String idString, String friendIdString) {
+        Long id = Long.parseLong(idString);
+        Long friendId = Long.parseLong(friendIdString);
+        if (!(allIds.contains(id) && allIds.contains(friendId))) {
+            throw new UserNotFoundException("User not found");
+        }
         Set<Long> friends = userStorage.getUser(id).getFriends();
         friends.add(friendId);
         Set<Long> friendFriends = userStorage.getUser(friendId).getFriends();
@@ -68,7 +77,12 @@ public class UserService {
         log.debug("New friend added: " + userStorage.getUser(friendId));
     }
 
-    public void deleteFriend(Long id, Long friendId) {
+    public void deleteFriend(String idString, String friendIdString) {
+        Long id = Long.parseLong(idString);
+        Long friendId = Long.parseLong(friendIdString);
+        if (!(allIds.contains(id) && allIds.contains(friendId) )) {
+            throw new UserNotFoundException("User not found");
+        }
         Set<Long> friends = userStorage.getUser(id).getFriends();
         friends.remove(friendId);
         Set<Long> friendFriends = userStorage.getUser(friendId).getFriends();
@@ -76,9 +90,12 @@ public class UserService {
         log.debug("User deleted from friends: " + userStorage.getUser(friendId));
     }
 
-    public ArrayList<User> getFriends(Long id) {
-        User user =  userStorage.getUser(id);
-        Set<Long> userIds =  user.getFriends();
+    public ArrayList<User> getFriends(String idString) {
+        Long id = Long.parseLong(idString);
+        if (!(allIds.contains(id))) {
+            throw new UserNotFoundException("User not found");
+        }
+        Set<Long> userIds =  userStorage.getUser(id).getFriends();
         ArrayList<User> friendsList = new ArrayList<>();
         for (Long friendId : userIds) {
             friendsList.add(userStorage.getUser(friendId));
@@ -88,15 +105,23 @@ public class UserService {
         return friendsList;
     }
 
-    public ArrayList<User> getCommonFriends (Long id, Long otherId) {
-        ArrayList<User> friends = getFriends(id);
-        ArrayList<User> otherFriends = getFriends(otherId);
+    public ArrayList<User> getCommonFriends (String idString, String otherIdString) {
+        Long id = Long.parseLong(idString);
+        Long otherId = Long.parseLong(otherIdString);
+        if (!(allIds.contains(id) && allIds.contains(otherId) )) {
+            throw new UserNotFoundException("User not found");
+        }
+        ArrayList<User> friends = getFriends(idString);
+        ArrayList<User> otherFriends = getFriends(otherIdString);
         friends.retainAll(otherFriends);
         log.debug("Current number of common friends for two users: {}", friends.size());
         return friends;
     }
 
     public static void validateUser(User user) {
+        if (user.getFriends() == null) {
+            user.setFriends(new HashSet<>());
+        }
         if (!(user.getEmail().contains("@"))) {
             throw new ValidationException("A valid e-mail should contain @");
         }
@@ -113,8 +138,8 @@ public class UserService {
 
 
     public void delete(User user) {
-        if (!(userStorage.getUsers().contains(user))) {
-            throw new ValidationException("User with id " + user.getId() +" not found");
+        if (!(allIds.contains(user.getId()))) {
+            throw new UserNotFoundException("User not found");
         }
         userStorage.delete(user);
     }
