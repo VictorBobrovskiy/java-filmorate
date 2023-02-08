@@ -34,9 +34,9 @@ public class UserService {
         return allIds;
     }
 
-    public List<User> getUsers() {
-        log.debug("Current number of users: {}", userStorage.getUsers().size());
-        return userStorage.getUsers();
+    public List<User> findAll() {
+        log.debug("Current number of users: {}", userStorage.findAll().size());
+        return userStorage.findAll();
     }
 
     public User getUser(String idString){
@@ -66,7 +66,6 @@ public class UserService {
         log.debug("User updated: " + user);
         return user;
     }
-
 
     public void addFriend(String idString, String friendIdString) {
         Long id = Long.parseLong(idString);
@@ -109,6 +108,14 @@ public class UserService {
         return friendsList;
     }
 
+    private Set<Long> getFriendsIdsFromString(String idString) {
+        Long id = Long.parseLong(idString);
+        if (!(allIds.contains(id))) {
+            throw new UserNotFoundException("User not found");
+        }
+        return userStorage.getUser(id).getFriends();
+    }
+
     public ArrayList<User> getCommonFriends (String idString, String otherIdString) {
         Long id = Long.parseLong(idString);
         Long otherId = Long.parseLong(otherIdString);
@@ -141,10 +148,10 @@ public class UserService {
     }
 
 
-    public void delete(User user) {
-        if (!(allIds.contains(user.getId()))) {
+    public void delete(Long id) {
+        if (!(allIds.contains(id))) {
             throw new UserNotFoundException("User not found");
         }
-        userStorage.delete(user);
+        userStorage.delete(id);
     }
 }

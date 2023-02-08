@@ -33,9 +33,9 @@ public class FilmService {
         allIds = new HashSet<>();
     }
 
-    public List<Film> getFilms() {
-        log.debug("Current number of films: {}", filmStorage.getFilms().size());
-        return filmStorage.getFilms();
+    public List<Film> findAll() {
+        log.debug("Current number of films: {}", filmStorage.findAll().size());
+        return filmStorage.findAll();
     }
 
     public Film create(Film film) {
@@ -67,7 +67,7 @@ public class FilmService {
 
     public List<Film> getPopular(String countString) {
         int count = Integer.parseInt(countString);
-        List<Film> popularFilms = filmStorage.getFilms().stream()
+        List<Film> popularFilms = filmStorage.findAll().stream()
                 .sorted()
                 .limit(count)
                 .collect(Collectors.toList());
@@ -101,6 +101,13 @@ public class FilmService {
         Set<Long> likes = filmStorage.getFilm(id).getLikes();
         likes.remove(userId);
         log.debug("Like removed from user: {}", userId);
+    }
+
+    public void delete(Long id) {
+        if (!(allIds.contains(id))) {
+            throw new UserNotFoundException("Film not found");
+        }
+        filmStorage.delete(id);
     }
 
     public void validateFilm(Film film) {

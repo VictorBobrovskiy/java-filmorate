@@ -22,7 +22,7 @@ public class UserController {
 
     @GetMapping
     public List<User> findAll() {
-        return userService.getUsers();
+        return userService.findAll();
     }
 
     @GetMapping("/{id}")

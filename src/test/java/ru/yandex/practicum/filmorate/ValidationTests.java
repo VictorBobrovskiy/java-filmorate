@@ -74,7 +74,7 @@ class ValidationTests {
             System.out.println(ex.getMessage());
         }
 
-        List<Film> filmList = filmservice.getFilms();
+        List<Film> filmList = filmservice.findAll();
 
         assertEquals(1, film.getId());
         assertEquals(1, filmList.size());
@@ -123,7 +123,7 @@ class ValidationTests {
             System.out.println(ex.getMessage());
         }
 
-        Collection<User> userList = userService.getUsers();
+        Collection<User> userList = userService.findAll();
 
         System.out.println(userList);
         assertEquals(2, userList.size());

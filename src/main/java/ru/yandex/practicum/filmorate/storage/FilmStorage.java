@@ -4,9 +4,9 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.List;
 
-public interface FilmStorage {
+public interface FilmStorage{
 
-    List<Film> getFilms();
+    List<Film> findAll();
 
     Film getFilm(Long id);
 
@@ -14,6 +14,5 @@ public interface FilmStorage {
 
     Film update(Film film);
 
-    void delete(Film film);
-    
+    void delete(Long id);
 }

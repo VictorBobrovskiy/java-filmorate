@@ -15,7 +15,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     private HashMap<Long, Film> films = new HashMap<>();
 
     @Override
-    public List<Film> getFilms(){
+    public List<Film> findAll(){
         return new ArrayList<>(films.values());
     }
 
@@ -37,8 +37,8 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public void delete(Film film){
-        films.remove(film);
+    public void delete(Long id){
+        films.remove(id);
     }
 
 }

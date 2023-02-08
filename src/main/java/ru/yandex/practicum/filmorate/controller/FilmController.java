@@ -22,7 +22,7 @@ public class FilmController {
 
     @GetMapping
     public List<Film> findAll() {
-        return filmService.getFilms();
+        return filmService.findAll();
     }
 
     @PostMapping

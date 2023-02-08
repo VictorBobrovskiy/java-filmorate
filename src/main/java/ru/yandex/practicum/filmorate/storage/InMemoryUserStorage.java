@@ -16,7 +16,7 @@ public class InMemoryUserStorage implements UserStorage {
     private HashMap<Long, User> users = new HashMap<>();
 
     @Override
-    public List<User> getUsers() {
+    public List<User> findAll() {
         return new ArrayList<>(users.values());
     }
 
@@ -39,8 +39,8 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public void delete(User user) {
-        users.remove(user);
+    public void delete(Long id) {
+        users.remove(id);
     }
 
 
