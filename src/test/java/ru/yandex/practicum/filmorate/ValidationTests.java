@@ -1,14 +1,17 @@
 package ru.yandex.practicum.filmorate;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
+
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -18,8 +21,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ValidationTests {
 
-    @Autowired UserService userService;
-    @Autowired FilmService filmservice;
+     UserService userService = new UserService(new InMemoryUserStorage());
+     FilmService filmservice = new FilmService(new InMemoryFilmStorage());
+
+
 
     @Test
     void validateFilm() {
