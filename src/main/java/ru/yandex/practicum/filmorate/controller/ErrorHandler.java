@@ -9,7 +9,7 @@ import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.ErrorResponse;
 
-    @RestControllerAdvice ("ru.yandex.practicum.filmorate.controller")
+    @RestControllerAdvice
     public class ErrorHandler {
 
     @ExceptionHandler

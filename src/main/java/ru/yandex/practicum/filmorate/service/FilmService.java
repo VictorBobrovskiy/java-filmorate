@@ -40,6 +40,7 @@ public class FilmService {
     public Film create(Film film) {
         validateFilm(film);
         film.setId(++id);
+        allIds.add(id);
         log.debug("Film created: " + film);
         return filmStorage.create(film);
     }
@@ -49,6 +50,7 @@ public class FilmService {
             throw new UserNotFoundException("Film not found");
         }
         validateFilm(film);
+        filmStorage.update(film);
         log.debug("Film updated: " + film);
         return film;
     }
@@ -78,8 +80,8 @@ public class FilmService {
         if (!(allIds.contains(id))) {
             throw new UserNotFoundException("Film not found");
         }
-        if (!(filmStorage.getFilm(id).getLikes().contains(userId))) {
-            throw new UserNotFoundException("User not found");
+        if (filmStorage.getFilm(id).getLikes().contains(userId)) {
+            throw new UserNotFoundException("User already liked the film");
         }
         Set<Long> likes = filmStorage.getFilm(id).getLikes();
         likes.add(userId);
@@ -93,10 +95,11 @@ public class FilmService {
             throw new UserNotFoundException("Film not found");
         }
         if (!(filmStorage.getFilm(id).getLikes().contains(userId))) {
-            throw new UserNotFoundException("User not found");
+            throw new UserNotFoundException("Like from this user not found");
         }
         Set<Long> likes = filmStorage.getFilm(id).getLikes();
         likes.remove(userId);
+        log.debug("Like removed from user: {}", userId);
     }
 
     public void validateFilm(Film film) {

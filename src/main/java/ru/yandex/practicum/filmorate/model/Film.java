@@ -53,13 +53,7 @@ public class Film implements Comparable<Film>{
 
     @Override
     public int compareTo(Film film) {
-        if (this.getLikes().size() > film.getLikes().size()) {
-            return 1;
-        } else  if (this.getLikes().size() > film.getLikes().size()) {
-            return -1;
-        } else {
-            return 0;
-        }
+        return Integer.compare(film.getLikes().size(), this.getLikes().size());
 
     }
 }
