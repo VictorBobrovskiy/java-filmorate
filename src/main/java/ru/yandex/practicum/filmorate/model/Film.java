@@ -54,6 +54,5 @@ public class Film implements Comparable<Film>{
     @Override
     public int compareTo(Film film) {
         return Integer.compare(film.getLikes().size(), this.getLikes().size());
-
     }
 }
