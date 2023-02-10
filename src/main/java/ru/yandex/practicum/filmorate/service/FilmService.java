@@ -3,17 +3,14 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import javax.validation.Valid;
-import java.time.LocalDate;
+
+
+import java.sql.Date;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -117,7 +114,7 @@ public class FilmService {
         if (film.getName().isBlank() || film.getName() == null) {
             throw new ValidationException("Film name should not be blank");
         }
-        if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
+        if (film.getReleaseDate().before(Date.valueOf("1895-12-28"))) {
             throw new ValidationException("Film release date not be earlier than 28-12-1895. Now: " + film.getReleaseDate());
         }
         if (film.getDescription().length() > 200) {

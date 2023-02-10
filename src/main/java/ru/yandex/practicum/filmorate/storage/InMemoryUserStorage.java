@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-@Component
+
 public class InMemoryUserStorage implements UserStorage {
 
     private HashMap<Long, User> users = new HashMap<>();

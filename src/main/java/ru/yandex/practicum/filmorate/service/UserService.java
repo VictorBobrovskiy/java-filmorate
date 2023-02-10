@@ -6,11 +6,9 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.*;
 
 @Slf4j
@@ -28,7 +26,6 @@ public class UserService {
         this.userStorage = userStorage;
         allIds = new HashSet<>();
     }
-
 
     public Set<Long> getAllIds() {
         return allIds;
@@ -142,7 +139,7 @@ public class UserService {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
-        if (user.getBirthday().isAfter(LocalDate.now())) {
+        if (user.getBirthday().after(Date.from(Instant.now()))) {
             throw new ValidationException("Birthday should be in the past");
         }
     }

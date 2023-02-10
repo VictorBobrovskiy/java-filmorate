@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
+import java.sql.Date;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -21,21 +21,28 @@ public class Film implements Comparable<Film>{
 
     private String description;
 
-    private LocalDate releaseDate;
+    private int duration;
+
+    private Date releaseDate;
+
+    public GENRE genre;
+
+    public MGA_RATING rating;
 
     Set<Long> likes;
-
-    private int duration;
 
     public Film() {
     }
 
-    public Film(String name, String description, LocalDate releaseDate, int duration) {
+    public Film(String name, String description, Date releaseDate,
+                int duration, GENRE genre, MGA_RATING rating, Set<Long> likes) {
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
-        likes = new HashSet<>();
+        this.genre = genre;
+        this.rating = rating;
+        this.likes = likes;
     }
 
     @Override
