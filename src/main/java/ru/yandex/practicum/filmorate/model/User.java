@@ -1,16 +1,20 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.extern.slf4j.Slf4j;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+
 
 @NotNull
-@Slf4j
 public class User {
-    private int id;
+    private Long id;
+
+    private Set<Long> friends;
     @NotBlank
     private String email;
     @NotBlank
@@ -21,11 +25,21 @@ public class User {
     public User() {
     }
 
+    @Autowired
     public User(String email, String login, String name, LocalDate birthdate) {
         this.email = email;
         this.login = login;
         this.name = name;
         this.birthday = birthdate;
+        friends = new HashSet<>();
+    }
+
+    public Set<Long> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(Set<Long> friends) {
+        this.friends = friends;
     }
 
     public String getLogin() {
@@ -36,11 +50,11 @@ public class User {
         this.login = login;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -74,19 +88,20 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return email.equals(user.email) && Objects.equals(name, user.name) && Objects.equals(birthday, user.birthday);
+        return Objects.equals(id, user.id) && email.equals(user.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(email);
+        return Objects.hash(id, email);
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "email='" + email + '\'' +
-                ", id=" + id +
+                "id=" + id +
+                ", friends=" + friends +
+                ", email='" + email + '\'' +
                 ", login='" + login + '\'' +
                 ", name='" + name + '\'' +
                 ", birthday=" + birthday +
